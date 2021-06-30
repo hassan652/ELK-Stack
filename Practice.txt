@@ -1,0 +1,95 @@
+GET _cluster/health
+
+GET _nodes/stats   
+
+PUT places
+
+#CREATE PART
+
+POST places/_doc
+{
+  "place": "Lahore",
+  "country": "Pakistan"
+}
+
+POST places/_doc
+{
+  "place": "Northampton",
+  "country": "England"
+}
+
+POST places/_doc
+{
+  "place": "Brisbane",
+  "country": "Australia"
+}
+
+POST places/_doc
+{
+  "place": "Barcelona",
+  "country": "Spain"
+}
+
+POST places/_doc
+{
+  "place": "Cairo",
+  "country": "Egypt"
+}
+
+#With customized Id of the documents
+
+PUT favorite_candy/_doc/1
+{
+  "first_name": "John",
+  "candy": "Starburst "
+}
+
+PUT favorite_candy/_doc/2
+{
+  "first_name": "Rachel",
+  "candy": "Rolos"
+}
+
+PUT favorite_candy/_doc/3
+{
+  "first_name": "Tom",
+  "candy": "Sweet Tarts "
+}
+
+#READ
+GET places
+GET favorite_candy/_doc/1
+
+#UPDATE (1)
+
+PUT favorite_candy/_doc/1
+{
+  "first_name": "Sally",
+  "candy": "Snickers"
+}
+
+#UPDATE (2)
+
+POST favorite_candy/_update/1
+{ 
+  "doc" : {
+  "candy": "M&Ms"
+  }
+}
+  
+#CREATE
+
+PUT favorite_candy/_create/1
+{
+  "first_name": "Finn",
+  "candy": "Jolly Ranchers"
+}
+GET places/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+#DELETE
