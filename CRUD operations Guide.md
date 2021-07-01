@@ -1,4 +1,4 @@
-## Part 1: Intro to Elasticsearch & Kibana
+## Part 1: Intro to Elasticsearch & Kibana.
 
 
 This repo contains all resources needed in order to get started with Elasticsearch and Kibana.
