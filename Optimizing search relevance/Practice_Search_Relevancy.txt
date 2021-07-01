@@ -1,0 +1,89 @@
+GET news_headlines/_search
+
+#Get exact total number of hits
+GET news_headlines/_search
+{
+  "track_total_hits": true
+}
+
+#Search for data within specific time range
+GET news_headlines/_search
+{
+  "query": {
+    "range": {
+      "date": {
+        "gte": "2015-06-20",
+        "lte": "2015-09-22"
+      }
+    }
+  }
+}
+
+#Searching using Aggregation 
+GET news_headlines/_search
+{ 
+  "aggs": {
+    "by_category": {
+      "terms": {
+        "field": "category",
+        "size": 100
+      }
+    }
+  }
+}
+
+#Combination of both search types 
+#Identifying most popular topics in entertainment category
+
+GET news_headlines/_search
+{
+  "query": {
+    "match" : {"category": "ENTERTAINMENT"}
+    },
+  "aggregations": {
+    "popular_in_entertainment": {  
+      "significant_text": {"field": "headline"}
+      }
+  }
+}
+
+#Writing a query to further explore the dataset
+#INCREASED RECALL
+GET news_headlines/_search
+{
+  "query":{
+    "match":{
+      "headline": {
+        "query": "Khloe Kardashian Kendall Jenner"
+      }
+    }
+  }
+}
+
+#INCREASED PRECISION
+
+GET news_headlines/_search
+{
+  "query":{
+    "match":{
+      "headline": {
+        "query": "Khloe Kardashian Kendall Jenner",
+        "operator": "and"
+      }
+    }
+  }
+}
+
+#LANDING IN BETWEEN AND & OR OPERATOR
+
+GET news_headlines/_search
+{
+  "query":{
+    "match":{
+      "headline": {
+        "query": "Khloe Kardashian Kendall Jenner",
+        "minimum_should_match": 3
+      }
+    }
+  }
+}
