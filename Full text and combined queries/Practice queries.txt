@@ -1,0 +1,244 @@
+#Get information about docs in an index (Search Query)
+GET news_headlines/_search 
+
+
+#Get types of categories that exist in our dataset (Aggregations request)
+GET news_headlines/_search
+{
+  "aggregations": {
+    "by_category": {
+      "terms": {
+        "field": "category",
+        "size": 100
+      }
+    }
+  }
+}
+
+#Using a match query to search for phrases (Ed Sheeran's song Shape of you)
+GET news_headlines/_search
+{
+  "query": {
+    "match":{
+      "headline": {
+        "query": "Shape of you"
+      }
+    }
+  }
+}
+
+#Using a match_phrase query to search for "shape of you"
+GET news_headlines/_search
+{
+  "query": {
+    "match_phrase": {
+      "headline": "Shape of you"
+    }
+  }
+}
+
+#Using a multi_match search query to find well-rounded relevant results for given search terms
+GET news_headlines/_search
+{
+  "query":{
+    "multi_match": {
+      "query": "Michelle Obama",
+      "fields": [
+        "headline",
+        "short_description",
+        "authors"
+        ]
+    }
+  }
+}
+
+#PER FIELD BOOSTING
+#Using a multi_match search query to find well-rounded relevant results using per field boosting
+GET news_headlines/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "Michelle Obama",
+      "fields": [
+        "headline^2",
+        "short_description",
+        "authors"
+        ]
+    }
+  }
+}
+
+#Adding type parameter equal to "phrase" in multi-match query
+GET news_headlines/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "party planning",
+      "fields": [
+        "headline^2",
+        "short_description"
+        ],
+        "type" : "phrase"
+    }
+  }
+}
+
+#COMBINED QUERIES
+#Writing a combined query to check which articles have "Michelle Obama" mentioned in them
+GET news_headlines/_search
+{
+  "query":{
+    "match_phrase": {
+      "headline": "Michelle Obama"
+    }
+},
+  "aggregations":{
+    "category_mentions": {
+      "terms": {
+        "field": "category",
+        "size" : 100
+      }
+    }
+  }
+}
+
+#Writing a query with MUST clause to find all the articles under POLITICS category that mention phrase "Michelle Obama"
+GET news_headlines/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "headline": "Michelle Obama"
+          }
+        },
+        {
+          "match": {
+            "category": "POLITICS"
+          }
+        }
+      ]
+    }
+  }
+}
+
+#Writing a query which returns all hits that contain "Michelle Obama" in the headline field excluding only the category "WEDDINGS"
+GET news_headlines/_search
+{
+  "query": {
+    "bool":{
+      "must": {
+        "match_phrase":{
+          "headline" : "Michelle Obama"
+        }
+      },
+      "must_not": [
+        {
+          "match":{
+            "category": "WEDDINGS"
+          }
+        }
+      ]
+    }
+  }
+}
+
+#Using a should clause to further optimize the search experience
+GET news_headlines/_search
+{
+  "query": {
+    "bool":{
+      "must":{
+        "match_phrase": {
+          "headline": "Michelle Obama"
+        }
+      },
+      "should": [
+        {
+          "match_phrase": {
+            "category": "BLACK VOICES"
+          }
+        }
+      ]
+    }
+  }
+}
+
+#Using the filter clause to filter articles published between certain dates
+GET news_headlines/_search
+{
+  "query": {
+    "bool": {
+      "must":
+        {
+          "match_phrase": {
+            "headline": "Michelle Obama"
+          }
+        },
+      "filter": [
+        {
+          "range": {
+            "date": {
+              "gte": "2014-03-25",
+              "lte": "2016-03-25"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+#Adding multiple queries under the should clause
+GET news_headlines/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {"match_phrase": {"headline": "Michelle Obama"}}
+        ],
+       "should":[
+          {"match": {"headline": "Becoming"}},
+          {"match": {"headline": "women"}},
+          {"match": {"headline": "empower"}}
+      ]
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
