@@ -1,0 +1,74 @@
+GET ecommerce_data/_search
+ 
+#Cleaning the data according to our needs and for simplicity
+
+#creating a new index with the required mapping
+PUT ecommerce_data_
+{
+  "mappings":{
+    "properties": {
+      "Country":{
+        "type" : "keyword"
+      },
+      "CustomerID":{
+        "type": "long"
+      },
+      "Description":{
+        "type": "text"
+      },
+      "InvoiceDate":{
+        "type": "date",
+        "format": "M/d/yyyy H:m"
+      },
+      "InvoiceNo":{
+        "type": "keyword"
+      },
+      "Quantity":{
+        "type": "long"
+      },
+      "StockCode": {
+        "type": "keyword"
+      },
+      "UnitPrice":{
+        "type": "double"
+      }
+    }
+  }
+}
+
+#Reindex the data from original index to the destination
+POST _reindex
+{
+  "source": {
+    "index": "ecommerce_data"
+  },
+  "dest": {
+    "index": "ecommerce_data_"
+  }
+}
+
+#Removing negative values from unit_price field
+POST ecommerce_data_/_delete_by_query
+{
+  "query": {
+    "range":{
+      "UnitPrice":{
+        "lte": 0
+      }
+    }
+  }
+}
+
+
+#Remove the skewing of average by dropping values above 500 in unit price field
+POST ecommerce_data_/_delete_by_query
+{
+  "query": {
+    "range":{
+      "UnitPrice": {
+        "gte": 500
+      }
+    }
+  }
+}
+
