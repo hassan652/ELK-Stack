@@ -48,17 +48,16 @@ POST _reindex
 }
 
 #Removing negative values from unit_price field
-POST ecommerce_data_/_delete_by_query
+POST ecommerce_data/_delete_by_query
 {
   "query": {
-    "range":{
-      "UnitPrice":{
+    "range": {
+      "UnitPrice": {
         "lte": 0
       }
     }
   }
 }
-
 
 #Remove the skewing of average by dropping values above 500 in unit price field
 POST ecommerce_data_/_delete_by_query
